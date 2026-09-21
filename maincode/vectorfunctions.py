@@ -134,11 +134,18 @@ def matmul(a,b):
                 crow.append(product)
             c.append(crow)
     else:
-        return("Matrix dimensions are incompatible")
+        raise ValueError("Dimension Mismatch")
+    return c
+
+def norm(a):
+    n=0
+    for i in range(len(a)):
+        n += a[i]**2
+        c= n**(1/2)
+
     return c
 
 
-matprint(matmul(a,b))
 
 
 

@@ -32,10 +32,7 @@ def magnitude(v):
     return presum**(1/2)
 ### nested lists as matrices
 #let matrix a be a nested list matrix
-a = [[1,2,3]
-    ,[4,5,6]
-     ,[7,8,9]
-     ,[10,11,12]]
+
 ### write these functions
 #shape(A) → (rows, cols)
 #transpose(A)
@@ -85,9 +82,11 @@ def add(a, b):
             c.append(rowc)
             rowc=[]
     return c
-a=[[1,2,3],
-   [4,5,6],
-   [7,8,9]]
+a=[[1,2],
+   [4,5],
+   [7,8]]
+b=[[10,9,8],
+   [7,6,5]]
 ## let c be a constant scalar factor for the matrix a
 def scale(c,a):
     n = []
@@ -106,6 +105,40 @@ def matprint(a):
         print(f"{a[row]}")
 
 
+### watched matrix mult video
+### going to implement new functions -- sept 21 1pm
+### create first matmul iteration matmul = a*b
+def matmul(a,b):
+    c=[]
+
+    arows, acols = shape(a)
+    brows, bcols = shape(b)
+
+    ##first loop to create c[0][0]
+    x=0
+    y=0
+    crow=[]
+    product=0
+
+
+    #c.append(crow)
+    ##create a loop that loops this loop
+    # through the first row of products and appends each to crow, then crow to c, then reset crow
+    if acols==brows:
+        for row in range(arows):
+            crow=[]
+            for col in range(bcols):
+                product=0
+                for itr in range(acols):
+                    product += a[row][itr] * b[itr][col]
+                crow.append(product)
+            c.append(crow)
+    else:
+        return("Matrix dimensions are incompatible")
+    return c
+
+
+matprint(matmul(a,b))
 
 
 

@@ -1,5 +1,7 @@
 #python -m pytest tests/test_matrix.py -v
+import numpy as np
 import pytest
+import random
 from src.linalg.matrix import Matrix
 
 A = Matrix([[1, 2], [3, 4]])
@@ -137,3 +139,72 @@ def test_add_row_shape_mismatch():
     A = Matrix([[1, 2], [3, 4]])
     with pytest.raises(ValueError):
         A.add_row(Matrix([[1, 2, 3]]))
+
+def to_numpy(M):
+    return np.array(M.data)
+def matches(M, expected):
+    return np.allclose(to_numpy(M), expected)
+def test_matmul_random():
+    for _ in range(50):
+        r = random.randint(1, 8)
+        k = random.randint(1, 8)
+        c = random.randint(1, 8)
+        A = Matrix.random(r, k, 1.0)    # r×k
+        B = Matrix.random(k, c, 1.0)    # k×c — inner dims must match
+        expected = to_numpy(A) @ to_numpy(B)
+        assert matches(A @ B, expected), f"failed on {A.shape} @ {B.shape}"
+def test_elementwise_random():
+    for _ in range(50):
+        r, c = random.randint(1, 8), random.randint(1, 8)
+        A, B = Matrix.random(r, c, 1.0), Matrix.random(r, c, 1.0)
+        expected = to_numpy(A) * to_numpy(B)
+        assert matches(A * B, expected), f"failed on {A.shape}"
+
+
+def test_add_sub_random():
+    for _ in range(50):
+        r, c = random.randint(1, 8), random.randint(1, 8)
+        A, B = Matrix.random(r, c, 1.0), Matrix.random(r, c, 1.0)
+        a, b = to_numpy(A), to_numpy(B)
+        assert matches(A + B, a + b), f"+ failed on {A.shape}"
+        assert matches(A - B, a - b), f"- failed on {A.shape}"
+
+
+def test_scalar_random():
+    for _ in range(50):
+        r, c = random.randint(1, 8), random.randint(1, 8)
+        A = Matrix.random(r, c, 1.0)
+        s = random.uniform(-5, 5)
+        expected = to_numpy(A) * s
+        assert matches(A * s, expected), f"A*s failed on {A.shape}"
+        assert matches(s * A, expected), f"s*A failed on {A.shape}"
+
+
+def test_transpose_random():
+    for _ in range(50):
+        r, c = random.randint(1, 8), random.randint(1, 8)
+        A = Matrix.random(r, c, 1.0)
+        expected = to_numpy(A).T
+        result = A.T
+        assert result.shape == expected.shape, f"shape wrong on {A.shape}"
+        assert matches(result, expected), f"values wrong on {A.shape}"
+
+
+def test_sum_axis0_random():
+    for _ in range(50):
+        r, c = random.randint(1, 8), random.randint(1, 8)
+        A = Matrix.random(r, c, 1.0)
+        expected = to_numpy(A).sum(axis=0, keepdims=True)
+        result = A.sum(axis=0)
+        assert result.shape == expected.shape, f"shape wrong on {A.shape}"
+        assert matches(result, expected), f"values wrong on {A.shape}"
+
+
+def test_sum_axis1_random():
+    for _ in range(50):
+        r, c = random.randint(1, 8), random.randint(1, 8)
+        A = Matrix.random(r, c, 1.0)
+        expected = to_numpy(A).sum(axis=1, keepdims=True)
+        result = A.sum(axis=1)
+        assert result.shape == expected.shape, f"shape wrong on {A.shape}"
+        assert matches(result, expected), f"values wrong on {A.shape}"

@@ -15,7 +15,7 @@ class Matrix:
         mat1=self.data
         mat2=other.data
         provendifferent=False
-        if len(mat1)==len(mat2):
+        if self.shape==other.shape:
             try:
                 for row in range(len(mat1)-1):
                     for col in range(len(mat1)-1):
@@ -144,11 +144,13 @@ class Matrix:
         elif isinstance(b,Matrix) and isinstance(a,Matrix) and(a.shape==b.shape):
             mat1=a.data
             mat2=b.data
+            arows,acols=a.shape
+            brows,bcols=b.shape
             newmat=[]
             
-            for row in range(len(mat1)):
+            for row in range(brows):
                 newrow=[]
-                for col in range(len(mat1)):
+                for col in range(acols):
                     newrow.append((mat1[row][col])*(mat2[row][col]))
                 newmat.append(newrow)
             return Matrix(newmat)
@@ -178,10 +180,12 @@ class Matrix:
         elif isinstance(b,Matrix) and isinstance(a,Matrix) and(a.shape==b.shape):
             mat1=a.data
             mat2=b.data
+            arows,acols=a.shape
+            brows,bcols=b.shape
             newmat=[]
-            for row in range(len(mat1)):
+            for row in range(arows):
                 newrow=[]
-                for col in range(len(mat1)):
+                for col in range(bcols):
                     newrow.append((mat1[row][col])*(mat2[row][col]))
                 newmat.append(newrow)
             return Matrix(newmat)
@@ -282,12 +286,3 @@ class Matrix:
             return Matrix(z)
         else:
             raise ValueError(f"shape mismatch: matrix is {self.shape}, row is {b.shape}")
-
-
-
-         
-            
-
-
-    
-

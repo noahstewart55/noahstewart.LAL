@@ -1,7 +1,9 @@
+import math
+import random
 class Matrix:
     #write __eq__ at some point
     def __init__(self, datalist):
-        self.data = datalist
+        self.data = [row.copy() for row in datalist]
         self.rows = len(datalist)
         self.cols = len(datalist[0])
     def __repr__(self):
@@ -217,7 +219,75 @@ class Matrix:
                 negmatrow.append(-col)
             negmat.append(negmatrow)
         return Matrix(negmat)
-if __name__=="__main__":
-    A = Matrix([[1, 2], [3, 4]])
-    B = Matrix([[5, 6], [7, 8]])
-    print(A*2) 
+    ##1.3
+    def apply(self,f): 
+        mat0 = self.data
+        mat1=[]
+        rows, cols = self.shape
+        for row in range(rows):
+            newrow=[]
+            for col in range(cols):
+                newrow.append(f(mat0[row][col]))
+            mat1.append(newrow)
+        return Matrix(mat1)
+    def sum(self,axis=None): 
+        mat0 = self.data
+        s=0
+        list1=[]
+        list2=[]
+        rows, cols = self.shape
+        if axis == None: #sum all entrys
+            for row in mat0:
+                s+=sum(row)
+            return s
+        elif axis==1: #sum across each row
+            for row in mat0:
+                list1.append([sum(row)])
+            return Matrix(list1)
+        elif axis==0: #sum down each column
+            for i in range(cols):
+                list1.append(0)
+            for r in range(rows):
+                for c in range(cols):
+                    list1[c]= list1[c]+mat0[r][c]
+            list2.append(list1)
+            return Matrix(list2)
+    def __getitem__(self,key):
+        mat0 = self.data
+        r,c = key
+        val=mat0[r][c]
+        return val        
+    def __setitem__(self,key,value):
+        mat0 = self.data
+        r,c = key
+        mat0[r][c]=value
+    @classmethod
+    def random(cls,r,c,scale):
+        rmat=[]
+        for row in range(r):
+            newline=[]
+            for j in range(c):
+                newline.append(random.uniform(-scale,scale))
+            rmat.append(newline)
+        return Matrix(rmat)
+    def add_row(self, b): #b is one line (list) added as the last row of the matrix
+        a = self.data
+        rows = self.rows
+        cols = self.cols
+        z = [[0]*cols for _ in range(rows)]
+        if cols == b.cols:
+            for row in range(rows):
+                for col in range(cols):
+                    z[row][col]=a[row][col]+b[0,col]
+            return Matrix(z)
+        else:
+            raise ValueError(f"shape mismatch: matrix is {self.shape}, row is {b.shape}")
+
+
+
+         
+            
+
+
+    
+
